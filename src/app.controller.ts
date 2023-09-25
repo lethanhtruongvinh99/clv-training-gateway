@@ -23,6 +23,7 @@ import { GoogleAuthGuard } from './guards/google.guard';
 import { LocalAuthGuard } from './guards/local.guard';
 import { RolesGuard } from './guards/roles.guard';
 import { CreateVesselDto } from './dto/create-vessel-dto';
+import { AuthenticationGuardVersion2 } from './guards/authver2.guard';
 
 @Controller()
 export class AppController {
@@ -64,6 +65,7 @@ export class AppController {
   // user zone
   // @Roles(RoleEnum.Admin)
   // @UseGuards(AuthenticationGuard, RolesGuard)
+  @UseGuards(AuthenticationGuardVersion2)
   @Get('users')
   getUsers(@Query() queries: any) {
     return this.appService.getUsers(queries);
@@ -156,14 +158,17 @@ export class AppController {
   }
 
   @UseGuards(AuthenticationGuard)
-  @Get('vessels/:id')
-  getVessel(@Param('id') id: string) {
-    return this.appService.getVessel(+id);
+  @Get('vessels/:vessel_code')
+  getVessel(@Param('vessel_code') vessel_code: string) {
+    return this.appService.getVessel(vessel_code);
   }
 
   @UseGuards(AuthenticationGuard)
-  @Patch('vessels/:id')
-  updateVessel(@Param('id') id: string, @Body() vessel: CreateVesselDto) {
-    return this.appService.updateVessel(+id, vessel);
+  @Patch('vessels/:vessel_code')
+  updateVessel(
+    @Param('vessel_code') vessel_code: string,
+    @Body() vessel: CreateVesselDto,
+  ) {
+    return this.appService.updateVessel(vessel_code, vessel);
   }
 }

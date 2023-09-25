@@ -177,6 +177,18 @@ export class AppService {
     }
   }
 
+  async validateToken(token: string) {
+    try {
+      const response = this.userClient
+        .send({ role: 'auth', cmd: 'validate-token' }, { token })
+        .toPromise();
+      return response;
+    } catch (error) {
+      Logger.log(error);
+      return error;
+    }
+  }
+
   // role zone
   async getRoles(queries: any) {
     try {
@@ -294,6 +306,7 @@ export class AppService {
   // vessel zone
   async getVessels(queries: any) {
     try {
+      console.log(queries);
       return this.vesselClient.send(
         {
           role: 'vessel',
@@ -302,18 +315,19 @@ export class AppService {
         { queries },
       );
     } catch (error) {
+      console.log('!@#', error);
       return error;
     }
   }
 
-  async getVessel(id: number) {
+  async getVessel(vessel_code: string) {
     try {
       return this.vesselClient.send(
         {
           role: 'vessel',
           cmd: 'get-one',
         },
-        { id },
+        { vessel_code },
       );
     } catch (error) {
       return error;
@@ -334,14 +348,14 @@ export class AppService {
     }
   }
 
-  async updateVessel(id: number, vessel: CreateVesselDto) {
+  async updateVessel(vessel_code: string, vessel: CreateVesselDto) {
     try {
       return this.vesselClient.send(
         {
           role: 'vessel',
           cmd: 'update',
         },
-        { id, vessel },
+        { vessel_code, vessel },
       );
     } catch (error) {
       return error;
